@@ -16,23 +16,19 @@ def get_all_character() -> None:
     """
     Получение всех персонажей Рик и Морти
     """
-    response = requests.get(url='https://rickandmortyapi.com/api/character')
-    assert response.status_code == 200
-    json_response = response.json()
-    characters = json_response["results"]
-    pages = json_response["info"]['pages']
+    base_url = 'https://rickandmortyapi.com/api/character'
     page = 1
+    total_page = 1
 
-    for character in characters:
-        name = character['name']
-        print(name)
-
-    while page != pages:
-        response = requests.get(url='https://rickandmortyapi.com/api/character', params={'page': str(page + 1)})
+    while page <= total_page:
+        response = requests.get(
+            url=base_url,
+            params={'page': str(page)}
+        )
         assert response.status_code == 200
-
         json_response = response.json()
         characters = json_response["results"]
+        total_page = json_response["info"]['pages']
 
         for character in characters:
             name = character['name']
@@ -61,22 +57,19 @@ def get_characters_by_status(status: CharacterStatus):
     Args:
         status:(CharacterStatus) - статус персонажа
     """
-    response = requests.get(url='https://rickandmortyapi.com/api/character', params={'status': status.value})
-    assert response.status_code == 200
-    json_response = response.json()
-    characters = json_response["results"]
-    pages = json_response["info"]['pages']
+    base_url = 'https://rickandmortyapi.com/api/character'
     page = 1
+    total_page = 1
 
-    for character in characters:
-        print(character)
-
-    while page != pages:
-        response = requests.get(url='https://rickandmortyapi.com/api/character',
-                                params={'page': str(page + 1), 'status': status.value})
+    while page != total_page:
+        response = requests.get(
+            url=base_url,
+            params={'page': str(page + 1), 'status': status.value}
+        )
         assert response.status_code == 200
 
         json_response = response.json()
+        total_page = json_response["info"]['pages']
         characters = json_response["results"]
 
         for character in characters:
